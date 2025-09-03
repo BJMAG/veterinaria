@@ -2,8 +2,6 @@ pandas
 sqlalchemy
 flask
 fastapi
-uvicorn
-pydantic
 pytest
 python-dotenv
 reportlab
