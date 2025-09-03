@@ -1,0 +1,53 @@
+1. Fundamentos básicos
+
+Crear una ventana (QWidget, QMainWindow)
+
+Añadir widgets comunes: botones, etiquetas, cuadros de texto (QPushButton, QLabel, QLineEdit)
+
+Usar layouts para organizar widgets (QVBoxLayout, QHBoxLayout, QGridLayout)
+
+2. Eventos y señales
+
+Entender señales y slots (cómo conectar eventos a funciones)
+
+Manejar eventos básicos como clics, cambios de texto, etc.
+
+3. Widgets avanzados
+
+Listas, tablas y árboles (QListWidget, QTableWidget, QTreeWidget)
+
+Comboboxes, sliders, checkboxes (QComboBox, QSlider, QCheckBox)
+
+4. Diseño y estilo
+
+Uso de QStyleSheet para personalizar apariencia (colores, fuentes, tamaños)
+
+Uso de iconos y recursos gráficos
+
+5. Diseñador Qt (Qt Designer)
+
+Aprender a usar la herramienta gráfica para diseñar interfaces
+
+Integrar archivos .ui en código Python con uic.loadUi o convirtiéndolos a .py
+
+6. Diálogos y ventanas modales
+
+Crear diálogos de alerta, confirmación, selección de archivos (QMessageBox, QFileDialog)
+
+Ventanas modales y no modales
+
+7. Hilos y procesos
+
+Ejecutar tareas en segundo plano sin congelar la interfaz (QThread, QRunnable)
+
+8. Bases de datos
+
+Conectar PyQt con PostgreSQL u otras bases (usando psycopg2, SQLAlchemy)
+
+Mostrar datos en tablas y listas, manejar CRUD
+
+9. Organización de proyectos grandes
+
+Separar lógica de interfaz
+
+Uso de clases y módulos para mantener el código limpio y escalable
