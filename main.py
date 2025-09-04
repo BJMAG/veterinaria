@@ -2,12 +2,13 @@ import sys
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QLabel, QPushButton, QVBoxLayout,
     QMessageBox, QDialog, QLineEdit, QGridLayout, QSpacerItem,
-    QSizePolicy, QTabWidget, QTextEdit
+    QSizePolicy, QTabWidget
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
 
+# ---------------- PANEL DEL ADMINISTRADOR ----------------
 class AdminPanel(QWidget):
     def __init__(self):
         super().__init__()
@@ -19,45 +20,46 @@ class AdminPanel(QWidget):
         tabs = QTabWidget()
         tabs.setFont(QFont("Arial", 16))
 
-        # Pestaña 1
-        tab1 = QWidget()
-        tab1_layout = QVBoxLayout()
-        tab1_layout.addWidget(QLabel("Finanzad"))
-        tab1.setLayout(tab1_layout)
-
-        # Pestaña 2
-        tab2 = QWidget()
-        tab2_layout = QVBoxLayout()
-        tab2_layout.addWidget(QLabel("Peluqueria"))
-        tab2.setLayout(tab2_layout)
-
-        tab3 = QWidget()
-        tab3_layout = QVBoxLayout()
-        tab3_layout.addWidget(QLabel("Inventario"))
-        tab3.setLayout(tab2_layout)
-
-        tab4 = QWidget()
-        tab4_layout = QVBoxLayout()
-        tab4_layout.addWidget(QLabel("Clientes"))
-        tab4.setLayout(tab2_layout)
-
-        tab5 = QWidget()
-        tab5_layout = QVBoxLayout()
-        tab5_layout.addWidget(QLabel("Veterinaria"))
-        tab5.setLayout(tab2_layout)
-
-        tabs.addTab(tab1, "Finanzas")
-        tabs.addTab(tab2, "Peluqueria")
-        tabs.addTab(tab3, "Inventario")
-        tabs.addTab(tab4, "Clientes")
-        tabs.addTab(tab5, "Veterinaria")
+        # Pestañas del administrador
+        secciones = ["Finanzas", "Peluquería", "Inventario", "Clientes", "Veterinaria"]
+        for nombre in secciones:
+            tab = QWidget()
+            tab_layout = QVBoxLayout()
+            tab_layout.addWidget(QLabel(nombre))
+            tab.setLayout(tab_layout)
+            tabs.addTab(tab, nombre)
 
         layout.addWidget(tabs)
         self.setLayout(layout)
 
 
+# ---------------- PANEL DE AUXILIARES ----------------
+class AuxPanel(QWidget):
+    def __init__(self, role):
+        super().__init__()
+        self.setWindowTitle(f"Panel de {role}")
+        self.showMaximized()
+
+        layout = QVBoxLayout()
+
+        tabs = QTabWidget()
+        tabs.setFont(QFont("Arial", 16))
+
+        # Pestañas para auxiliares
+        secciones = ["Peluquería", "Inventario", "Clientes"]
+        for nombre in secciones:
+            tab = QWidget()
+            tab_layout = QVBoxLayout()
+            tab_layout.addWidget(QLabel(nombre))
+            tab.setLayout(tab_layout)
+            tabs.addTab(tab, nombre)
+
+        layout.addWidget(tabs)
+        self.setLayout(layout)
+
+
+# ---------------- DIALOGO DE PIN ----------------
 class NumPadDialog(QDialog):
-    
     def __init__(self, role, parent=None):
         super().__init__(parent)
         self.role = role
@@ -66,6 +68,7 @@ class NumPadDialog(QDialog):
 
         font = QFont("Arial", 28)
 
+        # Campo para el PIN
         self.pin_input = QLineEdit()
         self.pin_input.setFont(font)
         self.pin_input.setEchoMode(QLineEdit.EchoMode.Password)
@@ -73,6 +76,7 @@ class NumPadDialog(QDialog):
         self.pin_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.pin_input.setFixedHeight(70)
 
+        # Botones del numpad
         grid = QGridLayout()
         buttons = [
             '1', '2', '3',
@@ -100,7 +104,6 @@ class NumPadDialog(QDialog):
         layout.addWidget(self.pin_input)
         layout.addSpacing(20)
         layout.addLayout(grid)
-
         self.setLayout(layout)
 
     def agregar_numero(self, num):
@@ -108,8 +111,7 @@ class NumPadDialog(QDialog):
             self.pin_input.setText(self.pin_input.text() + num)
 
     def borrar(self):
-        texto = self.pin_input.text()
-        self.pin_input.setText(texto[:-1])
+        self.pin_input.setText(self.pin_input.text()[:-1])
 
     def aceptar(self):
         pin = self.pin_input.text()
@@ -118,45 +120,39 @@ class NumPadDialog(QDialog):
             "Auxiliar 1": "1111",
             "Auxiliar 2": "2222"
         }
-        if pins.get(self.role) == pin:
-        
-            if self.role == "Administrador":
-                self.parent().hide()  # Ocultar login
-                self.admin_panel = AdminPanel()
-                self.admin_panel.show()
 
-            self.accept()
+        if pins.get(self.role) == pin:
+            self.parent().hide()  # Ocultar ventana de login
+
+            # Abrir panel correspondiente según el rol
+            if self.role == "Administrador":
+                self.panel = AdminPanel()
+            else:
+                self.panel = AuxPanel(self.role)
+
+            self.panel.show()
+            self.accept()  # Cierra el numpad
         else:
             QMessageBox.warning(self, "Error", "PIN incorrecto")
             self.pin_input.clear()
-    
+
     def keyPressEvent(self, event):
         try:
             key = event.key()
-
             if key in (
                 Qt.Key.Key_0, Qt.Key.Key_1, Qt.Key.Key_2, Qt.Key.Key_3, Qt.Key.Key_4,
                 Qt.Key.Key_5, Qt.Key.Key_6, Qt.Key.Key_7, Qt.Key.Key_8, Qt.Key.Key_9
             ):
-                print(f"Tecla presionada: {event.text()}")
                 self.agregar_numero(event.text())
-
             elif key == Qt.Key.Key_Backspace:
-                print("Borrar presionado")
                 self.borrar()
-
             elif key in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
-                print("Aceptar presionado")
                 self.aceptar()
-
         except Exception as e:
             print("Error en keyPressEvent:", e)
 
 
-
-
-
-
+# ---------------- LOGIN PRINCIPAL ----------------
 class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -203,6 +199,7 @@ class LoginWindow(QWidget):
         dialog.exec()
 
 
+# ---------------- EJECUCIÓN PRINCIPAL ----------------
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = LoginWindow()
